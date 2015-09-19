@@ -42,7 +42,7 @@ GSG(company, 'secretPlans')
     //  and it will get that instead.
     return "Get off my lawn!";
   }
-});
+})
 .set(function(arg) {
   if (arg.constructor != MajesticLlama) {
     // returning false rejects the value.
