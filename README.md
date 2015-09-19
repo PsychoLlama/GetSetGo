@@ -37,13 +37,12 @@ Here's my guess:
 ```
 GSG(company, 'secretPlans')
 .get(function() {
-    if (!validPassword(user.password)) {
-      // return anything other than undefined,
-      //  and it will get that instead.
-      return "Get off my lawn!";
-    }
+  if (!validPassword(user.password)) {
+    // return anything other than undefined,
+    //  and it will get that instead.
+    return "Get off my lawn!";
   }
-})
+});
 .set(function(arg) {
   if (arg.constructor != MajesticLlama) {
     // returning false rejects the value.
