@@ -104,10 +104,18 @@ var GSG;
   GSG.prototype = {
 
     get: function (callback) {
+      if (typeof callback !== 'function') {
+        return this;
+      }
+
       this.getters.push(callback);
       return this;
     },
     set: function (callback) {
+      if (typeof callback !== 'function') {
+        return this;
+      }
+
       this.setters.push(callback);
       return this;
     }
