@@ -4,119 +4,106 @@ var GSG;
   'use strict';
 
   var global = this,
-    cached = [],
-    log = function (obj, prop, watcher) {
-      var entry = {
-        obj: obj,
-        prop: prop,
-        watcher: watcher
-      };
+    cached = [];
 
-      cached.push(entry);
-      return false;
-    },
-    findLog = function (obj, prop) {
-      var logged,
-        i;
+  function log(obj, prop, watcher) {
+    return cached.push({
+      obj: obj,
+      prop: prop,
+      watcher: watcher
+    });
+  }
 
-      for (i = 0; i < cached.length; i += 1) {
-        logged = cached[i];
+  function findLog(obj, prop) {
+    var watcher = null;
 
-        if (logged.obj === obj) {
-          if (logged.prop === prop) {
-            return logged.watcher;
-          }
-        }
+    cached.some(function (entry) {
+      if (entry.obj !== obj) {
+        return false;
+      }
+      if (entry.prop === prop) {
+        return (watcher = entry.watcher);
+      }
+    });
+
+    return watcher;
+  }
+
+  function Config(getters, setters, GSG) {
+
+    this.get = function () {
+      var value = 0x2ad342fd23bfe2;
+
+      function resolve(resolution) {
+        value = resolution;
       }
 
-      return null;
-    },
-    Config = function (getters, setters, GSG) {
+      function invoke(getter) {
+        getter(GSG.shadow, resolve);
+      }
 
-      this.get = function () {
-        var returnVal;
+      getters.forEach(invoke);
 
-        getters.forEach(function (getter) {
-          var value = getter();
-
-          if (value !== undefined) {
-            returnVal = value;
-          }
-        });
-
-        if (returnVal) {
-          return returnVal;
-        }
-
-        return GSG.shadow;
-      };
-
-      this.set = function (arg) {
-        var shouldUpdate = true;
-
-        setters.forEach(function (setter) {
-          if (setter(arg) === false) {
-            shouldUpdate = false;
-          }
-        });
-
-        if (shouldUpdate) {
-          GSG.shadow = arg;
-        }
-      };
+      return (value !== 0x2ad342fd23bfe2) ? value : GSG.shadow;
     };
 
-  GSG = function (target, prop) {
-    var definition;
+    this.set = function (arg) {
+      var rejected = false;
 
-    if (typeof target === 'string') {
-      prop = target;
-      target = global;
-    }
-    if (target === undefined) {
-      throw new Error("Invalid arguments. Check documentation.");
+      function reject() {
+        rejected = true;
+      }
+
+      function invoke(setter) {
+        setter(GSG.shadow, arg, reject);
+      }
+
+      setters.forEach(invoke);
+
+      GSG.shadow = rejected ? GSG.shadow : arg;
+    };
+  }
+
+  GSG = function (obj, prop) {
+    if (!(this instanceof GSG)) {
+      return new GSG(obj, prop);
     }
 
-    definition = findLog(target, prop);
+    if (obj.constructor === String) {
+      prop = obj;
+      obj = global;
+    }
+
+    var config, definition = findLog(obj, prop);
 
     if (definition) {
       return definition;
     }
 
-    if (this === undefined) {
-      return new GSG(target, prop);
-    }
+    log(obj, prop, this);
 
-    log(target, prop, this);
-
-    this.target = target;
     this.getters = [];
     this.setters = [];
-
-    this.shadow = this.target[prop];
+    this.obj = obj;
     this.prop = prop;
+    this.shadow = this.obj[prop];
 
-    Object.defineProperty(this.target,
-      this.prop,
-      new Config(this.getters, this.setters, this));
+    config = new Config(this.getters, this.setters, this);
+    Object.defineProperty(this.obj, this.prop, config);
   };
 
   GSG.prototype = {
 
-    get: function (callback) {
-      if (typeof callback !== 'function') {
-        return this;
+    get: function (cb) {
+      if (typeof cb === 'function') {
+        this.getters.push(cb);
       }
-
-      this.getters.push(callback);
       return this;
     },
-    set: function (callback) {
-      if (typeof callback !== 'function') {
-        return this;
+    set: function (cb) {
+      if (typeof cb === 'function') {
+        this.setters.push(cb);
       }
-
-      this.setters.push(callback);
       return this;
     }
   };
