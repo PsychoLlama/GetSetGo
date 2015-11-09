@@ -1,63 +1,57 @@
 # GetSetGo
-This library gives you brief syntax for defining getters and setters in JavaScript,
-and also fixes some of the irritating quirks.
+Getters and setters, terse and powerful.
 
-For one, the idea of listening to get/set events brings some powerful ideas.
+In javascript, the idea of listening to get/set events is a powerful one.
 Except that they're not really events. In order to register a listener, you
-are _required_ to sacrifice mutability. You can't set that property to a value, and you
-certainly can't retrieve it later. That is delegated to the getters and setters.
+are _required_ to sacrifice mutability. It can no longer hold a value, because that's delegated to the getters and setters.
 
 I wasn't going to let that stand.
 
-The GSG constructor allows you to keep the powerful event paradigm without breaking
-anything. You can subscribe to those events, and still set the value of your
-property. It's exactly like a listener should be.
+GSG allows you to use getters and setters without murdering your variables. _You can keep your values_. It's just like a listener. But better.
 
 ## Usage
 ```
 GSG(object, property)
-.get(yourListener)
-.set(yourOtherListener);
+  .get(handler)
+  .set(otherHandler)
 ```
-It's that simple. GetSetGo needs an object that your property belongs to, and if
-only a string is passed, it will assume the target is the global object, like so:
+It's that simple. GetSetGo needs an object to bind to, so if
+only a string is passed, it will assume the target is global. Example:
 
 ```
 GSG('alert')
 .get(function() {
-  // Find out how many times it's been used
-});
+  alertUsed++
+})
 ```
 
-If you want to prevent a get or set, you can return special values.
-Why would you want to do that? How should I know.
-It's you we're talking about.
-Here's my guess:
+If you want to prevent a get or set, you can use the function that's passed.
+Why would you want to do that? The best example is when building an API.
+If you have methods named `setValue()` or `getThingymabob()`, chances are you're already
+doing it. Let's see an example:
 
 ```
-GSG(company, 'secretPlans')
-.get(function() {
-  if (!validPassword(user.password)) {
-    // return anything other than undefined,
-    //  and it will get that instead.
-    return "Get off my lawn!";
+GSG(playlist, 'song')
+.get(function(value, resolve) {
+  if (!playing) {
+    // override the value by
+    // 'resolving' something else
+    resolve("No song playing")
   }
 })
-.set(function(arg) {
-  if (arg.constructor != MajesticLlama) {
-    // returning false rejects the value.
-    //  In this case, it will not be set.
-    return false;
+.set(function(value, newValue, reject) {
+  if (newValue.constructor !== Song) {
+    // That's not a song! Reject it!!
+    reject()
   }
-});
+})
 ```
 
 Notes:
 - You can also have as many getters and setters as you'd like.
 There's no limit.
-- You can totally use `new` with GSG if you want.
-It doesn't change anything, so it's just a matter of readability.
-- GSG is smart and will always return the same object for the same property.
+- You don't need to use `new` with GSG, but you totally can if you want.
+- GSG is smart and let's you define the same property limitlessly.
 
-Welp, have fun out there! If you find any issues, lemme know or submit a pull request.
-I'd love to hear from you!
+Welp, have fun out there! If you find any problems, submit an issue or a pull request.
+Lemme know what you think!
