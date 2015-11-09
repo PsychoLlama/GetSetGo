@@ -21,7 +21,8 @@ only a string is passed, it will assume the target is global. Example:
 ```
 GSG('alert')
 .get(function() {
-  alertUsed++
+  // count how many times alert has been used
+  count++
 })
 ```
 
