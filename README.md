@@ -1,5 +1,5 @@
 # GetSetGo
-Getters and setters, terse and powerful.
+Getters and setters, but eventy.
 
 In javascript, the idea of listening to get/set events is a powerful one.
 Except that they're not really events. In order to register a listener, you
