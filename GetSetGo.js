@@ -107,4 +107,9 @@ var GSG;
       return this;
     }
   };
+	
+	if (typeof module === 'object') {
+		module.exports = GSG;
+	}
+	
 }.call(this));

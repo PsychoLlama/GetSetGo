@@ -1,0 +1,25 @@
+{
+  "name": "get-set-go",
+  "version": "1.0.0",
+  "description": "Makes javascript getters and setters 638% cooler",
+  "main": "GetSetGo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PsychoLlama/GetSetGo.git"
+  },
+  "keywords": [
+    "getters",
+    "setters",
+    "events",
+    "listeners"
+  ],
+  "author": "Jesse Gibson <jesse@gundb.io> (http://techllama.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PsychoLlama/GetSetGo/issues"
+  },
+  "homepage": "https://github.com/PsychoLlama/GetSetGo#readme"
+}
