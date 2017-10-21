@@ -1,4 +1,4 @@
-# GetSetGo
+# [UNMAINTAINED] GetSetGo
 Getters and setters, but eventy.
 
 In javascript, the idea of listening to get/set events is a powerful one.
@@ -8,6 +8,9 @@ are _required_ to sacrifice mutability. It can no longer hold a value, because t
 I wasn't going to let that stand.
 
 GSG allows you to use getters and setters without murdering your variables. _You can keep your values_. It's just like a listener. But better.
+
+## Maintenance Notice
+I keep this project around because it's some of the first software I ever wrote. I'm sure this doesn't need to be said, but please never use this code.
 
 ## Usage
 ```
